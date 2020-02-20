@@ -1,0 +1,35 @@
+{
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "clean",
+      "command": "cd '${fileDirname}';rm *.java; rm *.class",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "label": "generate java code",
+      "command": "cd '${fileDirname}'; javacc ${fileBasename}",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "label": "build java code",
+      "command": "cd '${fileDirname}'; javac *.java",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ],
+  "version": "2.0.0"
+}
