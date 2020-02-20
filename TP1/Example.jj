@@ -24,6 +24,12 @@ TOKEN : {
 }
 
 // Production definition
-void Aritm() : {} {
-    <INTEGER> ( ("+" | "-") <INTEGER> )? <LF> // “(...)?” equivalent to “[...]”
+void Aritm() : {Token t1, t2;} {
+    t1=<INTEGER> {
+        System.out.println("Integer = "+t1.image);
+    }
+    (("+" | "-" | "*") t2=<INTEGER> {
+            System.out.println("Integer = "+t2.image);
+        }
+    )? (<LF>)
 }
