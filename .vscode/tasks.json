@@ -12,6 +12,16 @@
     },
     {
       "type": "shell",
+      "label": "execute jjtree",
+      "command": "cd '${fileDirname}';jjtree ${fileBasename}",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
       "label": "generate java code",
       "command": "cd '${fileDirname}'; javacc ${fileBasename}",
       "group": {
