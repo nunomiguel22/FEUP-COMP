@@ -26,7 +26,9 @@ public class Calculator/*@bgen(jjtree)*/implements CalculatorTreeConstants/*@ege
         if(node.jjtGetNumChildren() == 0) // leaf node with integer value
             return node.val;
         else if(node.jjtGetNumChildren() == 1) // only one child
-            return this.eval((SimpleNode) node.jjtGetChild(0));
+            if (node.id == CalculatorTreeConstants.JJTSUB)
+                return - this.eval((SimpleNode) node.jjtGetChild(0));
+            else return this.eval((SimpleNode) node.jjtGetChild(0));
     
         SimpleNode lhs = (SimpleNode) node.jjtGetChild(0); //left child
         SimpleNode rhs = (SimpleNode) node.jjtGetChild(1); // right child
@@ -61,11 +63,11 @@ SimpleNode Expression(): {/*@bgen(jjtree) Expression */
 /*@egen*/}{/*@bgen(jjtree) Expression */
     try {
 /*@egen*/
-    Expr1() <LF>/*@bgen(jjtree)*/
-                 {
-                   jjtree.closeNodeScope(jjtn000, true);
-                   jjtc000 = false;
-                 }
+    Expr1(1) <LF>/*@bgen(jjtree)*/
+                  {
+                    jjtree.closeNodeScope(jjtn000, true);
+                    jjtc000 = false;
+                  }
 /*@egen*/ {return jjtn000;}/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
@@ -89,8 +91,9 @@ SimpleNode Expression(): {/*@bgen(jjtree) Expression */
 /*@egen*/
 }
    
-void Expr1()      : {}{
+void Expr1(int sign)      : {}{
     Expr2(1)
+
     [
         ("+"/*@bgen(jjtree) #Add( 2) */
              {
@@ -147,8 +150,10 @@ void Expr1()      : {}{
                   jjtree.closeNodeScope(jjtn002,  2);
                 }
               }
-/*@egen*/        )
+/*@egen*/        
+        )
     ]
+
 }
 
 void Expr2(int sign)      : {} { // 1: positive; -1: negative
@@ -235,5 +240,9 @@ void Expr3(int sign)      : {Token t;}{
                }
 /*@egen*/      
     | "-" Expr3(-1)
-    | "(" Expr1() ")"
+    | "(" Expr1(sign) ")"
+
+    {if (sign == -1)
+        System.out.println("test");}
+
 }

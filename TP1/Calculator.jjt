@@ -22,7 +22,9 @@ public class Calculator{
         if(node.jjtGetNumChildren() == 0) // leaf node with integer value
             return node.val;
         else if(node.jjtGetNumChildren() == 1) // only one child
-            return this.eval((SimpleNode) node.jjtGetChild(0));
+            if (node.id == CalculatorTreeConstants.JJTSUB)
+                return - this.eval((SimpleNode) node.jjtGetChild(0));
+            else return this.eval((SimpleNode) node.jjtGetChild(0));
     
         SimpleNode lhs = (SimpleNode) node.jjtGetChild(0); //left child
         SimpleNode rhs = (SimpleNode) node.jjtGetChild(1); // right child
@@ -51,15 +53,18 @@ TOKEN:{
 }
 
 SimpleNode Expression(): {}{
-    Expr1() <LF> {return jjtThis;}
+    Expr1(1) <LF> {return jjtThis;}
 }
    
-void Expr1() #void: {}{
+void Expr1(int sign) #void: {}{
     Expr2(1)
+
     [
         ("+" Expr2(1) #Add(2)
-        | "-" Expr2(1) #Sub(2))
+        | "-" Expr2(1) #Sub(2)
+        )
     ]
+
 }
 
 void Expr2(int sign) #void: {} { // 1: positive; -1: negative
@@ -74,5 +79,9 @@ void Expr3(int sign) #void: {Token t;}{
         jjtThis.val = sign * Integer.parseInt(t.image);
     } #Term
     | "-" Expr3(-1)
-    | "(" Expr1() ")"
+    | "(" Expr1(sign) ")"
+
+    {if (sign == -1)
+        System.out.println("test");}
+
 }
