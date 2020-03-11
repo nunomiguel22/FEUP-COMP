@@ -1,0 +1,94 @@
+options 
+{
+    LOOKAHEAD=1;
+}
+   
+PARSER_BEGIN(Jmm)
+
+import java.io.*;
+   
+public class Jmm{
+
+    public static void main(String args[]) throws ParseException {
+        if (args.length == 0){
+            System.out.println("Not enough arguments");
+            System.exit(1);
+        }
+        InputStream fileStream = null;
+        try{
+            System.out.println(args[0]);
+            fileStream = new FileInputStream(args[0]);
+        }
+        catch (FileNotFoundException e) {
+            System.out.println(e);
+            System.exit(1);
+        }
+
+        Jmm parser = new Jmm(fileStream);
+        SimpleNode root = parser.program();
+    }
+}
+
+PARSER_END(Jmm)
+   
+SKIP :{
+   " " | "\r" | "\t"
+   | <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+}
+   
+TOKEN:{
+    < CLASS: "class" >
+    | < EXTENDS: "extends" >
+    | < PUBLIC: "public" >
+    | < STATIC: "static" >
+    | < RETURN: "return" >
+    | < VOID: "void" >
+    | < MAIN: "main" >
+    | < STRING: "string" >
+    | < INT: "int" >
+    | < BOOL: "boolean" >
+    | < IF: "if" >
+    | < ELSE: "else" >
+    | < IMPORT: "import" >
+    | < WHILE: "while" >
+    | < LENGTH: "length" >
+    | < TRUE: "true" >
+    | < FALSE: "false" >
+    | < THIS: "this" >
+    | < NEW: "new" >
+    | < NOT: "!" >
+    | < COMMA: "," >
+    | < SEMICOLON: ";" >
+    | < LEFTB: "{" >
+    | < RIGHTB: "}" >
+    | < LEFTSB: "[" >
+    | < RIGHTSB: "]" >
+    | < LEFTCB: "(" >
+    | < RIGHTCB: ")" >
+    | < POINT: "." >
+    | < AND: "&&" >
+    | < ASSIGN: "=" >
+    | < LESSTHAN: "<" >
+    | < PLUS: "+" >
+    | < MINUS: "-" >
+    | < TIMES: "*" >
+    | < DIVIDED: "/" >
+    | < INTEGERLITERAL: 
+        ( ((["+", "-"])?(["0"-"9"])+)
+        |("0x"(["0"-"9","a"-"f","A"-"F"])+)
+        |("0b"(["0","1"])+))>
+   | < LF: "\n" >
+}
+
+
+SimpleNode program() : {}
+{
+    Expr1(1) <LF> {return jjtThis;}
+}
+
+void Expr1(int sign) #void: {}{
+    {if (sign == -1)
+        System.out.println("test");}
+
+}
+

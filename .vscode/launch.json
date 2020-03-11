@@ -7,6 +7,9 @@
         {
             "type": "java",
             "name": "Debug (Launch) - Current File",
+            "args": [
+                "Project/example/example.jmm"
+            ],
             "request": "launch",
             "mainClass": "${file}"
         },
