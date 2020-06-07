@@ -2,8 +2,8 @@
   "tasks": [
     {
       "type": "shell",
-      "label": "clean",
-      "command": "cd '${fileDirname}';rm *.java; rm *.class",
+      "label": "gradle build",
+      "command": "gradle clean build",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -12,8 +12,8 @@
     },
     {
       "type": "shell",
-      "label": "execute jjtree",
-      "command": "cd '${fileDirname}';jjtree ${fileBasename}",
+      "label": "gradle build - no tests",
+      "command": "gradle clean build -x test",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -22,22 +22,8 @@
     },
     {
       "type": "shell",
-      "label": "generate java code",
-      "command": "cd '${fileDirname}'; javacc ${fileBasename}",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "problemMatcher": []
-    },
-    {
-      "type": "shell",
-      "label": "build java code",
-      "command": "cd '${fileDirname}'; javac *.java",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "label": "gradle test",
+      "command": "gradle test",
       "problemMatcher": []
     }
   ],

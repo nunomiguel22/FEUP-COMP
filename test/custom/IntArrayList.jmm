@@ -1,0 +1,70 @@
+import static io.println(int) void;
+
+class IntArrayList{
+    int[] arr;
+    int size;
+
+    public int init(){
+        arr = new int[1];
+        size = 0;
+        return 0;
+    }
+
+    public int add(int value){
+        if (arr.length - size < 2)
+            this.grow();
+        else {}
+
+        arr[size] = value;
+        size = size + 1;
+        return 0;
+    }
+
+    public int get(int index){
+        return arr[index];
+    }
+
+    public int grow(){
+        int[] temp;
+        int i;
+        i = 0;
+        
+        temp = new int[arr.length * 2];
+        
+        while(i < arr.length){
+            temp[i] = arr[i];
+            i = i + 1;
+        }
+        arr = temp;
+        return 0;
+    }
+
+    public int size(){
+        return size;
+    }
+
+    public int print(){
+        int i;
+        i = 0;
+
+        while(i < this.size()){
+            io.println(this.get(i));
+            i = i + 1;
+        }
+        return 0;
+    }
+
+    public static void main(String[] args){
+        IntArrayList list;
+        list = new IntArrayList();
+        list.init();
+        list.add(3);
+        list.add(5);
+        list.add(22);
+        list.add(14);
+        list.add(122);
+        list.add(1);
+        list.print();
+
+    }
+}

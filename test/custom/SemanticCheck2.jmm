@@ -1,0 +1,33 @@
+
+class SemanticCheck2 {
+	public static void main(String[] args) {
+		int a;
+		int b;
+        int c;
+        boolean d;
+		a = 30;
+
+
+        //invalid
+		if (true < 2)
+			a = 3;
+		else b = 3;
+
+        // valid
+		if (3 < 2)
+			a = 3;
+		else b = 3;
+
+        // b might be undefined
+        a = b;
+
+        d = !3; //invalid
+        d = !false; //valid
+        d = 3 && true; //invalid 
+        d = true && d; // valid
+	}
+	public int add(int a, int b){
+		return a+b;
+	}
+
+}

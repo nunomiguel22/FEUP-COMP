@@ -1,0 +1,47 @@
+import io;
+import io;//Warning ignored
+import io.println(int);
+import io.println(int);//Warning ignored
+
+
+class SemanticCheck1 {
+	public static void main(String[] args) {
+        int a;
+        int[] b;
+        Unresolved c;
+        SemanticFail1 d;
+
+        a = 2; //Valid
+        a[2] = 3;//Invalid
+        
+        b = new int [true];//Invalid
+        b = new int[4];//Valid
+        
+        a = b[io];//Invalid
+        a = b[4];//Valid
+        
+        b.add(2, 3);//Invalid
+        this.add(true, 4);//Invalid
+        this.add(2, 3);//Valid
+        
+        a = a + 3 * 2;//Valid
+        a = d;//Invalid
+        
+        a = b.length;//Valid
+        a = a.length;//Invalid
+        
+        d = new SemanticFail1();//Valid
+        d = new asd();//Invalid
+	}
+	public int add(int a, int b){
+		return a+b;
+    }
+    
+  public int add(int a, int b){//Invalid Duplicate
+		return a+b;
+  }
+  
+  public int add(int a, int b, int c){//Valid
+		return a+b+c;
+	}
+}

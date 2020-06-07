@@ -1,0 +1,81 @@
+import IntArrayList;
+import IntArrayList.init() int;
+import IntArrayList.add(int) int;
+import IntArrayList.print() int;
+import static io.println(int) void;
+
+// Requires IntArrayList to be compiled before
+
+class Divisors{
+
+    IntArrayList divisors;
+    int value;
+
+    public int init(int val){
+        divisors = new IntArrayList();
+        divisors.init();
+        value = val;
+        return 0;
+    }
+
+    public int calcDivisors(){
+      int i;
+      int r;
+      
+      i= 1;
+
+      while(i < value + 1){
+        r = this.remainder(value, i);
+        if (this.eq(r, 0))
+          divisors.add(i);
+        else {}
+        i = i + 1;
+      }
+      return 0;
+    }
+
+    public IntArrayList getDivisors(){
+      return divisors;
+    }
+
+    public static void main(String[] args){
+      Divisors div;
+      IntArrayList divList;
+      
+      div = new Divisors();
+      div.init(45);
+      div.calcDivisors();
+      divList = div.getDivisors();
+      divList.print();
+    }
+
+    public int remainder(int num, int divisor){
+        return (num - divisor * (num / divisor));
+    }
+
+    // From Life.jmm
+    public boolean eq(int a, int b) {
+		return (!this.lt(a, b) && !this.lt(b, a));
+	}
+	
+	public boolean ne(int a, int b) {
+		return (!this.eq(a, b));
+	}
+	
+    public boolean lt(int a, int b) {
+		return (a < b);
+    }
+    
+    public boolean le(int a, int b) {
+		return !(!this.lt(a, b) && !this.eq(a, b));
+    }
+    
+    public boolean gt(int a, int b) {
+		return (!this.le(a, b));
+    }
+    
+    public boolean ge(int a, int b) {
+		return !(!this.gt(a, b) && !this.eq(a, b));
+	}
+
+}

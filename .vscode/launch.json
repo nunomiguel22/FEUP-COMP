@@ -6,18 +6,47 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Debug (Launch) - Current File",
-            "args": [
-                "Project/example/example.jmm"
-            ],
+            "name": "Debug",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "Main",
+            "projectName": "comp2020-4f",
+            "args": [
+                "test/custom/launch.jmm"
+            ]
         },
         {
             "type": "java",
-            "name": "Debug (Launch)-Example",
+            "name": "Debug -o",
             "request": "launch",
-            "mainClass": "Example"
+            "mainClass": "Main",
+            "projectName": "comp2020-4f",
+            "args": [
+                "test/custom/launch.jmm",
+                "-o"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Debug -r=3",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "comp2020-4f",
+            "args": [
+                "test/custom/launch.jmm",
+                "-r=3"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Debug Print",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "comp2020-4f",
+            "args": [
+                "test/custom//launch.jmm",
+                "-printAST",
+                "-printTable"
+            ]
         }
     ]
 }

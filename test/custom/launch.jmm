@@ -1,0 +1,25 @@
+import static io.println(int) void;
+
+//Recursion test
+class Fibonacci {
+
+    public int fib(int n){
+        int result;
+
+        if (n < 2)
+            result = n;
+        else
+            result = this.fib(n-1) + this.fib(n-2);
+        
+        return result;
+    }
+
+    public static void main(String[] args){
+        Fibonacci fb;
+        fb = new Fibonacci();
+        io.println(fb.fib(2));
+        io.println(fb.fib(8));
+        io.println(fb.fib(9));
+        io.println(fb.fib(10));
+    }
+}

@@ -1,0 +1,530 @@
+options 
+{
+    LOOKAHEAD=1;
+}
+   
+PARSER_BEGIN(Jmm)
+   
+public class Jmm{
+
+    public int errorCount = 0;
+
+    public void skipTo(int token){
+        Token t = getNextToken();
+        while (t.kind != token && t.kind != EOF)
+            t = getNextToken();
+    }
+
+    public void errorHandler(ParseException e, String name, int nextToken) throws ParseException{
+        Compiler.printParseError(e, name, errorCount);
+        ++errorCount;
+        if (Compiler.errors >= 10){
+            Compiler.printExitMessage();
+            throw new ParseException();
+        }
+         skipTo(nextToken);
+    }
+
+    void fillIdentifierNode(Token t, SimpleNode node){
+        node.identifierVal = t.image;
+        node.line = t.beginLine;
+        node.column = t.beginColumn;
+    }
+
+    void fillNode(Token t, SimpleNode node){
+        node.line = t.beginLine;
+        node.column = t.beginColumn;
+    }
+}
+
+PARSER_END(Jmm)
+   
+SKIP :{
+   " " | "\r" | "\t" | "\n"
+   | <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+   | < "/*" (~["*"])* "*" (~["*","/"] (~["*"])* "*" | "*")* "/" >
+}
+
+TOKEN:{
+    < CLASS: "class" >
+    | < EXTENDS: "extends" >
+    | < PUBLIC: "public" >
+    | < STATIC: "static" >
+    | < RETURN: "return" >
+    | < VOID: "void" >
+    | < MAIN: "main" >
+    | < STRING: "String" >
+    | < INT: "int" >
+    | < BOOL: "boolean" >
+    | < IF: "if" >
+    | < ELSE: "else" >
+    | < IMPORT: "import" >
+    | < WHILE: "while" >
+    | < LENGTH: "length" >
+    | < TRUE: "true" >
+    | < FALSE: "false" >
+    | < THIS: "this" >
+    | < NEW: "new" >
+    | < NOT: "!" >
+    | < COMMA: "," >
+    | < SEMICOLON: ";" >
+    | < LEFTB: "{" >
+    | < RIGHTB: "}" >
+    | < LEFTSB: "[" >
+    | < RIGHTSB: "]" >
+    | < LEFTCB: "(" >
+    | < RIGHTCB: ")" >
+    | < DOT: "." >
+    | < AND: "&&" >
+    | < ASSIGN: "=" >
+    | < LESSTHAN: "<" >
+    | < PLUS: "+" >
+    | < MINUS: "-" >
+    | < TIMES: "*" >
+    | < DIVIDED: "/" >
+    | < INTEGERLITERAL: 
+        ( ((["0"-"9"])+)
+        |("0x"(["0"-"9","a"-"f","A"-"F"])+)
+        |("0b"(["0","1"])+))>
+    | < IDENTIFIER: ["A"-"Z","a"-"z","$","_"](["0"-"9","A"-"Z","a"-"z","_","$"])*>
+}
+
+
+SimpleNode program() : {}
+{
+    ImportDeclarationBody()
+    ClassDeclaration()
+    {return jjtThis;}
+}
+
+void ImportDeclarationBody() : {}
+{
+    (ImportDeclaration())*
+}
+
+/** Import **/
+void ImportDeclaration() : {Token t, t2;}
+{
+    <IMPORT> (t2 = <STATIC> {jjtThis.isStatic = true;})? t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);} #identifier(0)
+    
+    (ImportFunctionCall())?
+
+    (Type() #importreturn| <VOID>)? 
+    <SEMICOLON>
+}
+
+void ImportFunctionCall() : {Token t;}
+{
+    ((<DOT> t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);} #identifier(0))+ 
+    <LEFTCB>  ImportFunctionArguments() <RIGHTCB>) 
+}
+
+void ImportFunctionArguments() : {}
+{
+    (Type() | <VOID>)?  (<COMMA> (Type()))*
+}
+
+
+/** Class **/
+
+void ClassDeclaration() : {}
+{
+    ClassHeader()
+    ClassBody()
+}
+
+void ClassHeader() : {}
+{
+    ClassName() (Extends())?
+}
+
+
+
+void ClassName() : {Token t;} 
+{
+    <CLASS> t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);}
+}
+
+void ClassBody() : {}
+{
+    <LEFTB>
+    (MemberDeclaration() | MethodDeclaration())*
+    <RIGHTB>
+}
+
+void MemberDeclaration() #member : {} {
+    PrimitiveVarDeclaration() | IdentifierMemberDeclaration()
+}
+
+void IdentifierMemberDeclaration() : {}{
+    MemberIdentifierType() IdentifierVarDeclaration()
+
+}
+
+void MemberIdentifierType() : {Token t;}
+{
+    t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);}
+}
+
+
+/**
+ * Var Declaration
+ */
+
+void PrimitiveVarDeclaration() #primitivedeclaration : {Token t;}
+{
+  PrimitiveType()  t=<IDENTIFIER>{fillIdentifierNode(t, jjtThis);} #vardeclaration(0) <SEMICOLON>
+}
+
+void IdentifierVarDeclaration() #void : {Token t;}
+{
+    t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);} #vardeclaration(0) <SEMICOLON>
+}
+
+/**
+ * Var Declaration
+ */
+
+ /**
+ * Method Declaration
+ */
+
+void GeneralMethodDeclarion() #method : {}
+{
+    MethodHeader()
+    <LEFTB>
+    MethodBody()
+    MethodReturn()
+    <RIGHTB>
+}
+
+void MethodHeader() : {Token t1, t2;}
+{
+    // Method Type and Name
+    Type() #methodreturntype 
+    t1 = <IDENTIFIER>{fillIdentifierNode(t1, jjtThis);} #identifier(0)
+    
+    //Method Parameters
+    t2 = <LEFTCB> {fillNode(t2, jjtThis);}
+    ParameterList()
+    <RIGHTCB>
+}
+
+
+void MethodBody() : {}
+{
+    DeclarationsOrStatements()
+}
+
+void MethodReturn() : {}
+{
+    <RETURN> Expression() <SEMICOLON>
+}
+
+
+void MainDeclaration() #mainmethod : {}
+{
+    MainHeader()
+    MainBody()
+
+}
+
+void MainHeader() : {Token t;}
+{
+    <STATIC> <VOID> t = <MAIN> {fillNode(t, jjtThis);} <LEFTCB> <STRING> <LEFTSB> <RIGHTSB> <IDENTIFIER> <RIGHTCB>
+}
+
+void MainBody() : {}
+{
+    <LEFTB>
+    DeclarationsOrStatements()
+    <RIGHTB>
+}
+
+
+void MethodDeclaration() : {}
+{
+    <PUBLIC> (GeneralMethodDeclarion() | MainDeclaration())
+}
+
+ /**
+ * Method Declaration
+ */
+
+ /**
+ * Type
+ */
+
+
+void PrimitiveType() #void : {Token t;}
+{
+   t = <INT> {jjtThis.typeVal = t.image;} #primitive(0) (<LEFTSB> <RIGHTSB> #arraydeclaration(0))?
+   | 
+   t = <BOOL> {jjtThis.typeVal = t.image;} #primitive(0)
+}
+
+void Type() #void : {Token t;}
+{
+    (t = <INT> {jjtThis.typeVal = t.image;} #primitive(0) (<LEFTSB> <RIGHTSB> #arraydeclaration(0))?
+    | t = <BOOL> {jjtThis.typeVal = t.image;} #primitive(0)
+    | t = <IDENTIFIER>{fillIdentifierNode(t, jjtThis);} #identifier(0))
+}
+
+ /**
+ * Type
+ */
+
+/**
+ * STATEMENTS
+ */
+
+void Statement() #void : {}
+{
+    IfStatement()
+    |
+    WhileStatement()
+    |
+    IdentifierInstruction()
+    |
+    BlockStatement()
+    |
+    (LiteralTerm() <SEMICOLON>) #expression
+}
+
+void BlockStatement() : {}
+{
+    <LEFTB> (Statement())* <RIGHTB>
+}
+
+void IfStatement() : {}
+{
+    <IF> <LEFTCB> Expression() <RIGHTCB> 
+    Statement()
+    <ELSE> Statement()
+}
+
+void IdentifierStatement() #void : {}
+{
+    (AssignmentStatement() | (FunctionCallOp() (TermTail())?)#TermTail | rhsExp())
+    <SEMICOLON>
+}
+
+void AssignmentStatement() : {}
+{
+    (ArrayAccessOp())? <ASSIGN> Expression()
+}
+
+
+void TermTail() : {}
+{
+    (ArrayAccessOp() | FunctionCallOp()) (TermTail())?
+}
+
+void WhileStatement() : {}
+{
+    try{
+        <WHILE> <LEFTCB> Expression() <RIGHTCB>
+    }
+    catch(ParseException e){
+        errorHandler(e, "While Statement", RIGHTCB);
+    }
+    Statement()
+}
+
+/**
+ * STATEMENTS
+ */
+
+/**
+ * EXPRESSIONS
+ */
+
+void Expression() : {}
+{
+    AndExp() // Least precedence Operation
+}
+
+void AndExp() #void : {} 
+{
+    LessThanExp() (AndOp())*
+}
+
+void LessThanExp() #void : {} 
+{
+    AddSubExp() (LessThanOp())*
+}
+
+void AddSubExp() #void : {} 
+{
+    MultDivExp() (AddSubOp())*
+}
+
+void MultDivExp() #void : {} 
+{
+    Term() (MultDivOp())*
+}
+
+void rhsExp() #void : {}
+{ 
+    (MultDivOp())* 
+    (AddSubOp())* 
+    (LessThanOp())*
+    (AndOp())* 
+}
+
+void Term() #void : {}
+{
+    LiteralTerm()
+    |
+    IdentifierTerm()
+}
+
+void IdentifierTerm() #IdentifierInstruction : {Token t;} {
+    t = <IDENTIFIER>{fillIdentifierNode(t, jjtThis);} #identifier(0) (TermTail())?
+}
+
+void LiteralTerm() #void : {Token t;}
+{
+    (t = <INTEGERLITERAL> {jjtThis.integerVal = Integer.parseInt(t.image);} #integer
+    //True value
+    |
+    t = <TRUE> {jjtThis.booleanVal = true; fillNode(t, jjtThis);} #bool
+    //True value
+    |
+    t = <FALSE> {jjtThis.booleanVal = false; fillNode(t, jjtThis);} #bool
+    // New Expression
+    |
+    NewTerm()
+    //Self Reference
+    |
+    ThisRef()
+    //Negation
+    |
+    Not()
+    //Bracketed Expression
+    |
+    BracketedExpression()
+    )
+}
+
+void ThisRef() : {}
+{
+    <THIS> (TermTail())?
+}
+
+void BracketedExpression() : {}
+{
+    (<LEFTCB> Expression() <RIGHTCB>)
+}
+
+void Not():{Token t;}
+{
+    t = <NOT> {fillNode(t, jjtThis);} Term()
+}
+
+
+/**
+ * EXPRESSIONS
+ */
+
+/**
+ * OPERATIONS
+ */
+
+
+void AndOp() #void : {Token t;}
+{
+    (t = <AND> {fillNode(t, jjtThis);} LessThanExp()) #and(2)
+}
+
+void LessThanOp() #void : {Token t;}
+{
+    (t = <LESSTHAN> {fillNode(t, jjtThis);} AddSubExp()) #lessthan(2)
+}
+
+void AddSubOp() #void : {Token t;}
+{
+    (t = <PLUS> {fillNode(t, jjtThis);} MultDivExp()) #plus(2)
+    |
+    (t = <MINUS> {fillNode(t, jjtThis);} MultDivExp()) #minus(2)
+}
+
+void MultDivOp() #void : {Token t;}
+{
+    (t = <TIMES> {fillNode(t, jjtThis);} Term()) #times(2)
+    |
+    (t = <DIVIDED> {fillNode(t, jjtThis);} Term()) #divided(2)
+}
+
+void ArrayAccessOp() #arrayaccess : {}
+{
+    <LEFTSB> Expression() <RIGHTSB>
+}
+
+void FunctionCallOp() #function : {Token t;}
+{
+    <DOT>
+
+    ((t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);} #identifier(0) <LEFTCB> (ArgumentList())? <RIGHTCB>)
+
+    | (t = <LENGTH> {fillNode(t, jjtThis);} )#length)
+}
+
+
+
+/**
+ * OPERATIONS
+ */
+
+/**
+ * AUX
+ */
+
+void Extends() : {Token t;}
+{
+    <EXTENDS> t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);}
+}
+
+void ArrayType() #arraydeclaration : {}
+{
+   <LEFTSB> <RIGHTSB>
+}
+
+ void ParameterList() : {}
+{
+   (Parameter()  (<COMMA> Parameter())*)?
+} 
+
+void Parameter() : {Token t;}
+{
+    Type() t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);} #identifier(0)
+}
+
+void ArgumentList() : {}
+{
+    Expression() (<COMMA> Expression())*
+}
+
+
+void NewTerm() #void : {Token t;}
+{
+    <NEW> 
+    (
+    <INT> ArrayAccessOp() #newarray // New Int Array
+   |
+   (t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);} #identifier(0) <LEFTCB> <RIGHTCB>  (TermTail())?) #newobject  // New Object
+   )
+}
+
+void DeclarationsOrStatements() #void : {}
+{
+    (PrimitiveVarDeclaration() |  Statement())*
+}
+
+void IdentifierInstruction() : {Token t;}
+{
+    t = <IDENTIFIER> {fillIdentifierNode(t, jjtThis);} #identifier(0)
+
+    (IdentifierVarDeclaration() | IdentifierStatement()) 
+}
+
