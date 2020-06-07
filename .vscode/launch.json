@@ -9,7 +9,7 @@
             "name": "Debug",
             "request": "launch",
             "mainClass": "Main",
-            "projectName": "comp2020-4f",
+            "projectName": "FEUP-COMP",
             "args": [
                 "test/custom/launch.jmm"
             ]
@@ -19,7 +19,7 @@
             "name": "Debug -o",
             "request": "launch",
             "mainClass": "Main",
-            "projectName": "comp2020-4f",
+            "projectName": "FEUP-COMP",
             "args": [
                 "test/custom/launch.jmm",
                 "-o"
@@ -30,7 +30,7 @@
             "name": "Debug -r=3",
             "request": "launch",
             "mainClass": "Main",
-            "projectName": "comp2020-4f",
+            "projectName": "FEUP-COMP",
             "args": [
                 "test/custom/launch.jmm",
                 "-r=3"
@@ -41,7 +41,7 @@
             "name": "Debug Print",
             "request": "launch",
             "mainClass": "Main",
-            "projectName": "comp2020-4f",
+            "projectName": "FEUP-COMP",
             "args": [
                 "test/custom//launch.jmm",
                 "-printAST",

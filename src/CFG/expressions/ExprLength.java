@@ -29,8 +29,8 @@ public class ExprLength extends Expression {
     @Override
     public void checkSemantics() throws SemanticException {
         if (!this.lhs.isArray()) {
-            final int line = this.node.getFirstChild().getFirstChild().line;
-            final int column = this.node.getFirstChild().getFirstChild().column;
+            final int line = this.node.line;
+            final int column = this.node.column;
 
             final String msg = "not possible to get length of non array elements";
             throw new SemanticException(msg, line, column);

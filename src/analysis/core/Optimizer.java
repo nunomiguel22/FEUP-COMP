@@ -94,11 +94,9 @@ public class Optimizer {
         final List<DescVar> vars = lr.getAllVars();
 
         entry.setVarDefTable(new VarDefTable(method, this.data));
-        try {
-            this.buildVarDef(entry, vars, lr, new ArrayList<Statement>());
-        } catch (final SemanticException e) {
-            this.errorCheck(e);
-        }
+
+        this.buildVarDef(entry, vars, lr, new ArrayList<Statement>());
+
     }
 
     /**
@@ -111,7 +109,7 @@ public class Optimizer {
      * @throws SemanticException
      */
     private void buildVarDef(final Statement st, final List<DescVar> vars, final LocalRegistry lr,
-            final List<Statement> visited) throws SemanticException {
+            final List<Statement> visited) throws CompilerFailureException {
 
         for (final StatementLink pred : st.getPredecessors())
             if (!visited.contains(pred.source) && !pred.isBackEdge())
@@ -131,8 +129,13 @@ public class Optimizer {
         }
 
         for (final DescVar var : st.getVarUses()) {
-            if (st.getVarDefTable().getVarDef(var) == null)
-                throw new SemanticException(var.getName() + " may not be initialized!", st.line, st.column);
+            try {
+                if (st.getVarDefTable().getVarDef(var) == null)
+                    throw new SemanticException(var.getName() + " may not be initialized!", st.line, st.column);
+            } catch (final SemanticException e) {
+                this.errorCheck(e);
+                continue;
+            }
         }
 
         if (st instanceof StAssign) {

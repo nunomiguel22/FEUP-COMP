@@ -68,11 +68,6 @@ public class Compiler {
     private void buildSymbolTable() throws CompilerFailureException {
         this.compilerData.table = new SymbolTable(this.compilerData);
 
-        if (compilerData.errors > 0) {
-            printExitMessage();
-            throw new CompilerFailureException();
-        }
-
         if (this.printTable)
             this.compilerData.table.printTable();
     }
