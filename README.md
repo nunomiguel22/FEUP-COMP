@@ -2,7 +2,7 @@
 
 ## Summary
 
-The programs javacc to parse the program into an abstract syntax tree(AST) using the defined grammar rules. A symbol table is then built and if all semantic checks pass the code is translated to Java bytecodes.
+The program uses javacc to parse the program into an abstract syntax tree(AST) using the defined grammar rules. A symbol table is then built and if all semantic checks pass the code is translated to Java bytecodes.
 
 ### Info
 * [User Instructions](docs/User_Guide.md)
