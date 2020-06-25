@@ -35,8 +35,9 @@ public class ExprNewObject extends Expression {
     public boolean equals(final Object obj) {
         if (obj != null && getClass() == obj.getClass()) {
             final ExprNewObject expr2 = (ExprNewObject) obj;
-            if (this.idName.equals(expr2.idName) && this.termTail.equals(expr2.termTail))
-                return true;
+            if (this.idName.equals(expr2.idName))
+                if (this.termTail != null && expr2.termTail != null && this.termTail.equals(expr2.termTail))
+                    return true;
         }
         return false;
     }

@@ -6,29 +6,54 @@ class DefTest{
         int d;
         int e;
         int f;
+        int g;
+        int h;
 
         if (a < 0)
             d = 3;
         else d = 2;
-
         a = d;
 
-        while(a <0)
-          d = 3;
-
-        a = d;
-        
         if (a < 0)
             b = 3;
         else c = 2;
         a = b; 
 
+        if (a < 0){
+            if (a < 0-10)
+                f = 3;
+            else f = 10;
+        }
+        else {
+            if (a < 0 - 20)
+                f = 5;
+            else f = 3;
+        }
+        a = f;
+
+        if (a < 0){
+            if (a < 0-10)
+                g = 3;
+            else g = 10;
+        }
+        else {
+            if (a < 0 - 20)
+                g = 5;
+            else a = 3;
+        }
+        c = g;
+
+        while(a <0){
+            f = 3;
+            g = 4;
+        }
+        a = g;
+        a = f;
+        
         while (a < 4){
             e = 3;
         }
-
         a = e * 5;
-        a = f;
         
 
         return 0;
