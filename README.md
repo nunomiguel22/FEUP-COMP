@@ -26,10 +26,10 @@ The programs javacc to parse the program into an abstract syntax tree(AST) using
 * Extra Features (Optional)
 
 ### Grading
-* Checkpoint 1 **20/20
-* Checkpoint 2 **20/20
-* Checkpoint 3 **20/20
-* Final Project Grade **18.22/20
+* Checkpoint 1 **20/20**
+* Checkpoint 2 **20/20**
+* Checkpoint 3 **20/20**
+* Final Project Grade **18.22/20**
 
 
 ## Group 4F
