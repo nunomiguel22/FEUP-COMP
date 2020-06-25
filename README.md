@@ -19,6 +19,17 @@ The programs javacc to parse the program into an abstract syntax tree(AST) using
 * [Checkpoint 2 Checklist](docs/CP2_Checklist.md)
 * [Checkpoint 3 Checklist](docs/CP3_Checklist.md)
 
+### Missing Features
+* Import constructors with arguments (Optional)
+* Low level IR (Optional)
+* Constant Propagation (Not completed on time)
+* Extra Features (Optional)
+
+### Grading
+* Checkpoint 1 20/20
+* Checkpoint 2 20/20
+* Checkpoint 3 20/20
+* Final Project Grade 18.22/20
 
 
 ## Group 4F
